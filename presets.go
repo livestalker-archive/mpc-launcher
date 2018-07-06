@@ -7,12 +7,12 @@ import (
 )
 
 type Presets struct {
-	Presets []Preset `yaml: presets`
+	Presets []Preset `yaml:"presets"`
 }
 
 type Preset struct {
-	Name  string   `yaml: "name"`
-	Files []string `yaml: "files"`
+	Name  string   `yaml:"name"`
+	Files []string `yaml:"files"`
 }
 
 func LoadPresets(filename string) *Presets {
