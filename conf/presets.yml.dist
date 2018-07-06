@@ -1,0 +1,6 @@
+presets:
+  - name: Name of preset
+    files:
+      - "path to video 1"
+      - "path to video 2"
+      - "path to video ..."

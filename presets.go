@@ -3,7 +3,6 @@ package main
 import (
 	"io/ioutil"
 	"gopkg.in/yaml.v2"
-	"fmt"
 )
 
 type Presets struct {
@@ -23,9 +22,4 @@ func LoadPresets(filename string) *Presets {
 	}
 	err = yaml.Unmarshal(data, &presets)
 	return &presets
-}
-
-func main() {
-	LoadPresets("./conf/presets.yml")
-	fmt.Println("hello")
 }
