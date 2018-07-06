@@ -11,6 +11,7 @@ type Config struct {
 	Args      []string `yaml:"args,flow"`
 	MonCount  int      `yaml:"mon_count"`
 	StartPort int      `yaml:"start_port"`
+	WebUIPort int      `yaml:"webui_port"`
 }
 
 func LoadConfig(filename string) *Config {
@@ -23,7 +24,7 @@ func LoadConfig(filename string) *Config {
 	return &config
 }
 
-func (config *Config) GetNArgsFilename(filename string, monNumber int) []string{
+func (config *Config) GetNArgsFilename(filename string, monNumber int) []string {
 	args := make([]string, 0)
 	args = append(args, filename)
 	realPort := config.StartPort + monNumber
@@ -39,7 +40,7 @@ func (config *Config) GetNArgsFilename(filename string, monNumber int) []string{
 	return args
 }
 
-func (config *Config) GetNArgs(monNumber int) []string{
+func (config *Config) GetNArgs(monNumber int) []string {
 	args := make([]string, 0)
 	realPort := config.StartPort + monNumber
 	for _, el := range config.Args {
