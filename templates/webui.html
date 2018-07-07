@@ -5,10 +5,18 @@
     <title>Luncher</title>
 </head>
 <body>
+<h2>Пресеты</h2>
+<hr>
 <ol>
 {{range $ix, $el := .Presets}}
     <li><a href="/load?preset={{ $ix }}">{{ $el.Name }}</a></li>
 {{end}}
 </ol>
+<h2>Управление</h2>
+<a href="/play">PLAY</a> | <a href="/pause">PAUSE</a>
+<hr>
+<h2>Приложение</h2>
+<a href="/open">Открыть проигрыватель</a> | <a href="/close">Закрыть проигрыватель</a>
+<hr>
 </body>
 </html>

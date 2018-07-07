@@ -24,6 +24,8 @@ func (ui *WebUI) Init(config *Config, msgChan chan string) {
 	http.HandleFunc("/load", ui.loadPreset)
 	http.HandleFunc("/play", ui.PlayButton)
 	http.HandleFunc("/pause", ui.PauseButton)
+	http.HandleFunc("/close", ui.CloseButton)
+	http.HandleFunc("/open", ui.OpenButton)
 }
 
 func (ui *WebUI) Start(wg *sync.WaitGroup) {
@@ -45,6 +47,16 @@ func (ui *WebUI) PlayButton(writer http.ResponseWriter, request *http.Request) {
 
 func (ui *WebUI) PauseButton(writer http.ResponseWriter, request *http.Request) {
 	ui.MsgChan <- PauseCmd
+	http.Redirect(writer, request, "/", http.StatusTemporaryRedirect)
+}
+
+func (ui *WebUI) OpenButton(writer http.ResponseWriter, request *http.Request) {
+	ui.MsgChan <- StartCmd
+	http.Redirect(writer, request, "/", http.StatusTemporaryRedirect)
+}
+
+func (ui *WebUI) CloseButton(writer http.ResponseWriter, request *http.Request) {
+	ui.MsgChan <- StopCmd
 	http.Redirect(writer, request, "/", http.StatusTemporaryRedirect)
 }
 
