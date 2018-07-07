@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"net/url"
 	"net/http"
+	"strings"
+	"strconv"
 )
 
 type App struct {
@@ -39,6 +41,10 @@ func (app *App) ExecuteMsg(msg string) {
 	}
 }
 
+func (app *App) LoadPreset(id int) {
+	fmt.Println(id)
+}
+
 func main() {
 	configFilename := "./conf/config.yml"
 	presetsFilename := "./conf/presets.yml"
@@ -62,7 +68,14 @@ func supervisor(wg *sync.WaitGroup, app *App) {
 		}
 	}
 	for msg := range app.WebUI.MsgChan {
-		app.ExecuteMsg(msg)
+		if strings.HasPrefix(msg, "preset") {
+			elements := strings.Split(msg, ":")
+			//TODO process error
+			id, _ := strconv.Atoi(elements[1])
+			app.LoadPreset(id)
+		} else {
+			app.ExecuteMsg(msg)
+		}
 	}
 	for _, cmd := range app.Cmds {
 		cmd.Wait()

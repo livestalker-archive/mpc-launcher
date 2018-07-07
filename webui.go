@@ -21,6 +21,7 @@ func (ui *WebUI) Init(config *Config, msgChan chan string) {
 	ui.MsgChan = msgChan
 	http.HandleFunc("/", ui.WebUI)
 	http.HandleFunc("/shutdown", ui.ShutdownButton)
+	http.HandleFunc("/load", ui.loadPreset)
 	http.HandleFunc("/play", ui.PlayButton)
 	http.HandleFunc("/pause", ui.PauseButton)
 }
@@ -52,5 +53,13 @@ func (ui *WebUI) ShutdownButton(writer http.ResponseWriter, request *http.Reques
 	if err := ui.Srv.Shutdown(context.Background()); err != nil {
 		panic(err)
 	}
+	http.Redirect(writer, request, "/", http.StatusTemporaryRedirect)
+}
+
+func (ui *WebUI) loadPreset(writer http.ResponseWriter, request *http.Request){
+	values, _ := request.URL.Query()["preset"]
+	//TODO check errors
+	msg := fmt.Sprintf("preset:%s", values[0])
+	ui.MsgChan <- msg
 	http.Redirect(writer, request, "/", http.StatusTemporaryRedirect)
 }

@@ -5,9 +5,10 @@
     <title>Luncher</title>
 </head>
 <body>
-{{.Presets}}
-{{range .Presets.Presets}}
-{{.Name}}
+<ol>
+{{range $ix, $el := .Presets}}
+    <li><a href="/load?preset={{ $ix }}">{{ $el.Name }}</a></li>
 {{end}}
+</ol>
 </body>
 </html>

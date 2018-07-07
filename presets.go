@@ -5,9 +5,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-type Presets struct {
-	Presets []Preset `yaml:"presets"`
-}
+type Presets []Preset
 
 type Preset struct {
 	Name  string   `yaml:"name"`
