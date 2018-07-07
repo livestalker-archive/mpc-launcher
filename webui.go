@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"sync"
 	"context"
+	"html/template"
 )
 
 type WebUI struct {
+	App     *App
 	Srv     *http.Server
 	MsgChan chan string
 }
@@ -31,9 +33,8 @@ func (ui *WebUI) Start(wg *sync.WaitGroup) {
 }
 
 func (ui *WebUI) WebUI(writer http.ResponseWriter, request *http.Request) {
-	if request.Method == http.MethodPost {
-
-	}
+	tmpl, _ := template.ParseFiles("./templates/webui.html")
+	tmpl.Execute(writer, ui.App)
 }
 
 func (ui *WebUI) PlayButton(writer http.ResponseWriter, request *http.Request) {

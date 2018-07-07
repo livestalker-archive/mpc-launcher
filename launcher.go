@@ -21,6 +21,7 @@ func (app *App) Init(configFilename string, presetsFilename string) {
 	app.Presets = LoadPresets(presetsFilename)
 	ui := &WebUI{}
 	ui.Init(app.Config, msgChan)
+	ui.App = app
 	app.WebUI = ui
 	app.Cmds = make([]*exec.Cmd, app.Config.MonCount)
 	for i := 0; i < app.Config.MonCount; i++ {
