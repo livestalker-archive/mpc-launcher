@@ -12,7 +12,7 @@ import (
 
 type App struct {
 	Config  *Config
-	Presets *Presets
+	Presets Presets
 	WebUI   *WebUI
 	Cmds    []*exec.Cmd
 }
@@ -42,7 +42,21 @@ func (app *App) ExecuteMsg(msg string) {
 }
 
 func (app *App) LoadPreset(id int) {
-	fmt.Println(id)
+	if id +1 > len(app.Presets) {
+		return
+	}
+	preset := app.Presets[id]
+	client := http.Client{}
+	for i := 0 ; i < app.Config.MonCount ; i++ {
+		filename := preset.Files[i]
+		address := fmt.Sprintf("http://localhost:%d/browser.html", app.Config.StartPort+i+1)
+		req, _ := http.NewRequest(http.MethodGet, address, nil)
+		q := req.URL.Query()
+		q.Add("path", filename)
+		req.URL.RawQuery = q.Encode()
+		client.Do(req)
+		//TODO process error
+	}
 }
 
 func main() {

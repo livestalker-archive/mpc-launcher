@@ -1,0 +1,5 @@
+mpc_path: ""
+args: ["", ""]
+mon_count: 1
+start_port: 8800
+webui_port: 7777

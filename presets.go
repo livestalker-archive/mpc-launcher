@@ -12,12 +12,12 @@ type Preset struct {
 	Files []string `yaml:"files"`
 }
 
-func LoadPresets(filename string) *Presets {
+func LoadPresets(filename string) Presets {
 	var presets Presets
 	data, err := ioutil.ReadFile(filename)
 	if err != nil {
 		panic(err)
 	}
 	err = yaml.Unmarshal(data, &presets)
-	return &presets
+	return presets
 }
