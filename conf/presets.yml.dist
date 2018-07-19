@@ -1,6 +1,9 @@
-presets:
-  - name: Name of preset
-    files:
-      - "path to video 1"
-      - "path to video 2"
-      - "path to video ..."
+- name: Name of preset
+  light:
+    time: n
+    number: m
+  files:
+    - name: "file path"
+      args: ["/play", "/fullscreen", "/new", "/start", "100", "/monitor", "1", "/volume", "0", "/close"]
+    - name: "file path"
+      args: ["/play", "/fullscreen", "/monitor", "2", "/close"]

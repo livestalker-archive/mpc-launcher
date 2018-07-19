@@ -5,12 +5,14 @@
     <title>Luncher</title>
 </head>
 <body>
-<h2>Пресеты</h2>
 <hr>
 <ol>
-{{range $ix, $el := .Presets}}
-    <li><a href="/load?preset={{ $ix }}">{{ $el.Name }}</a></li>
+{{range $ix, $el := .}}
+    <li style="font-size: 40px;"><a href="/load?preset={{ $ix }}">{{ $el.Name }}</a></li>
 {{end}}
+<hr>
+<a href="/play">PLAY</a> | <a href="/pause">PAUSE</a> | <a href="/stop">STOP</a>
 </ol>
+<hr>
 </body>
 </html>
