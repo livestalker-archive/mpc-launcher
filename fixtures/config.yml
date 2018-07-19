@@ -1,0 +1,5 @@
+mpc_path: "C:\\path\\mpc-hc64.exe"
+args: ["/open", "/fullscreen"]
+mon_count: 1
+start_port: 8800
+webui_port: 7777

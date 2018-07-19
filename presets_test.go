@@ -2,7 +2,7 @@ package main
 
 import (
 	"testing"
-	"fmt"
+	"strings"
 )
 
 func TestLoadPresets(t *testing.T) {
@@ -17,7 +17,7 @@ func TestLoadPresets2(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	if len(p) != 2 || len(p[0].Files) != 2{
+	if len(p) != 2 || len(p[0].Files) != 2 {
 		t.Error("Wrong fixture")
 	}
 }
@@ -27,5 +27,16 @@ func TestLoadPresets3(t *testing.T) {
 	if err == nil {
 		t.Error("Preset file has not yaml format but it has not checked yet")
 	}
-	fmt.Println(err)
+}
+
+func TestPresetFile_GetFullArgs(t *testing.T) {
+	pf := PresetFile{
+		Name: "test preset",
+		Args: []string{"arg1", "arg2", "arg3"},
+	}
+	args1 := "test preset arg1 arg2 arg3"
+	args2 := pf.GetFullArgs()
+	if args1 != strings.Join(args2, " ") {
+		t.Error("Wrong full arguments slice")
+	}
 }
