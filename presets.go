@@ -9,7 +9,12 @@ type Presets []Preset
 
 type Preset struct {
 	Name  string   `yaml:"name"`
-	Files []string `yaml:"files"`
+	Files []PresetFile `yaml:"files"`
+}
+
+type PresetFile struct {
+	Name string   `yaml:"name"`
+	Args []string `yaml:"args,flow"`
 }
 
 func LoadPresets(filename string) Presets {
@@ -20,4 +25,10 @@ func LoadPresets(filename string) Presets {
 	}
 	err = yaml.Unmarshal(data, &presets)
 	return presets
+}
+
+func (preset * PresetFile) GetFullArgs() []string {
+	args := make([]string, 0)
+	args = append([]string{preset.Name}, preset.Args...)
+	return args
 }

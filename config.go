@@ -3,7 +3,6 @@ package main
 import (
 	"io/ioutil"
 	"gopkg.in/yaml.v2"
-	"strconv"
 )
 
 type Config struct {
@@ -22,35 +21,4 @@ func LoadConfig(filename string) *Config {
 	}
 	err = yaml.Unmarshal(data, &config)
 	return &config
-}
-
-func (config *Config) GetNArgsFilename(filename string, monNumber int) []string {
-	args := make([]string, 0)
-	args = append(args, filename)
-	realPort := config.StartPort + monNumber
-	for ix, el := range config.Args {
-		args[ix] = el
-	}
-	// add port arg
-	args = append(args, "/monitor")
-	args = append(args, strconv.Itoa(monNumber))
-	// add monitor arg
-	args = append(args, "/webport")
-	args = append(args, strconv.Itoa(realPort))
-	return args
-}
-
-func (config *Config) GetNArgs(monNumber int) []string {
-	args := make([]string, 0)
-	realPort := config.StartPort + monNumber
-	for _, el := range config.Args {
-		args = append(args, el)
-	}
-	// add port arg
-	args = append(args, "/monitor")
-	args = append(args, strconv.Itoa(monNumber))
-	// add monitor arg
-	args = append(args, "/webport")
-	args = append(args, strconv.Itoa(realPort))
-	return args
 }

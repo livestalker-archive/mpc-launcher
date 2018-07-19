@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"strings"
 	"strconv"
-	"time"
 )
 
 type App struct {
@@ -26,10 +25,6 @@ func (app *App) Init(configFilename string, presetsFilename string) {
 	ui.Init(app.Config, msgChan)
 	ui.App = app
 	app.WebUI = ui
-	app.Cmds = make([]*exec.Cmd, app.Config.MonCount)
-	for i := 0; i < app.Config.MonCount; i++ {
-		app.Cmds[i] = exec.Command(app.Config.MpcPath, app.Config.GetNArgs(i+1)...)
-	}
 }
 
 func (app *App) ExecuteMsg(msg string) {
@@ -47,45 +42,10 @@ func (app *App) LoadPreset(id int) {
 		return
 	}
 	preset := app.Presets[id]
-	client := http.Client{}
-	for i := 0; i < app.Config.MonCount; i++ {
-		filename := preset.Files[i]
-		address := fmt.Sprintf("http://localhost:%d/browser.html", app.Config.StartPort+i+1)
-		req, _ := http.NewRequest(http.MethodGet, address, nil)
-		q := req.URL.Query()
-		q.Add("path", filename)
-		req.URL.RawQuery = q.Encode()
-		client.Do(req)
-		//TODO process error
-	}
-	time.Sleep(1 * time.Second)
-	app.ExecuteMsg(FullscreenCmd)
-}
-
-func (app *App) StartCmd() {
-	for _, cmd := range app.Cmds {
-		err := cmd.Start()
-		if err != nil {
-			//TODO process error
-			fmt.Println(err)
-		}
-	}
-}
-
-func (app *App) StopCmd() {
-	for _, cmd := range app.Cmds {
-		if cmd.Process != nil {
-			err := cmd.Process.Kill()
-			if err != nil {
-				//TODO process error
-				fmt.Println(err)
-			}
-			cmd.Wait()
-		}
-	}
 	app.Cmds = make([]*exec.Cmd, app.Config.MonCount)
 	for i := 0; i < app.Config.MonCount; i++ {
-		app.Cmds[i] = exec.Command(app.Config.MpcPath, app.Config.GetNArgs(i+1)...)
+		app.Cmds[i] = exec.Command(app.Config.MpcPath, preset.Files[i].GetFullArgs()...)
+		app.Cmds[i].Start()
 	}
 }
 
@@ -104,19 +64,12 @@ func main() {
 
 func supervisor(wg *sync.WaitGroup, app *App) {
 	defer wg.Done()
-	app.StartCmd()
-	time.Sleep(1 * time.Second)
-	app.ExecuteMsg(AlwaysTopCmd)
 	for msg := range app.WebUI.MsgChan {
 		if strings.HasPrefix(msg, "preset") {
 			elements := strings.Split(msg, ":")
 			//TODO process error
 			id, _ := strconv.Atoi(elements[1])
 			app.LoadPreset(id)
-		} else if msg == StartCmd {
-			app.StartCmd()
-		} else if msg == StopCmd {
-			app.StopCmd()
 		} else {
 			app.ExecuteMsg(msg)
 		}
