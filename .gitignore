@@ -17,3 +17,6 @@
 # Configs
 conf/presets.yml
 conf/config.yml
+
+# tmp
+tmp/
