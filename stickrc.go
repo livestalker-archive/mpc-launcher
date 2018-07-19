@@ -88,23 +88,16 @@ func (p *RCPacket) GetBytes() []byte {
 }
 
 // Send a UDP packet to 2430 port to trigger the STICK.
-func (p *RCPacket) SendBytes(host string) error {
+func (p *RCPacket) SendBytes(host string) (int, error) {
 	address := fmt.Sprintf("%s:%s", host, StickUDPPort)
-	conn, err := net.Dial("udp", address)
-}
-
-/*
-func (p *Packet) Do() {
-	conn, err := net.Dial("udp", "192.168.16.139:2430")
+	conn, err := net.Dial("udp4", address)
+	if err != nil {
+		return 0, err
+	}
 	defer conn.Close()
+	n, err := conn.Write(p.GetBytes())
 	if err != nil {
-		fmt.Printf("Some error %v", err)
-		return
+		return 0, err
 	}
-	_, err = conn.Write(p.Join())
-	if err != nil {
-		fmt.Printf("Some error %v", err)
-		return
-	}
+	return n, nil
 }
-*/

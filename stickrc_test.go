@@ -3,6 +3,10 @@ package main
 import (
 	"testing"
 	"bytes"
+	"net"
+	"fmt"
+	"log"
+	"sync"
 )
 
 func TestNewPacket(t *testing.T) {
@@ -36,7 +40,40 @@ func TestRCPacket_GetBytes(t *testing.T) {
 	p := NewRCPacket()
 	p.SetScene(0, 5)
 	p.SetCommand(SceneOn)
-	if bytes.Compare(b, p.GetBytes()) !=0 {
+	if bytes.Compare(b, p.GetBytes()) != 0 {
 		t.Error("Wrong bytes slice created from RCPacket")
 	}
+}
+
+func TestRCPacket_SendBytes(t *testing.T) {
+	p := NewRCPacket()
+	p.SetScene(0, 5)
+	p.SetCommand(SceneOn)
+	wg := sync.WaitGroup{}
+	ch := make(chan struct{})
+	udpServer := func() {
+		defer wg.Done()
+		address := fmt.Sprintf("%s:%s", "localhost", StickUDPPort)
+		pc, err := net.ListenPacket("udp4", address)
+		if err != nil {
+			log.Fatal("Can not create local UDP server:", err)
+		}
+		close(ch)
+		defer pc.Close()
+		buf := make([]byte, 1024)
+		n, _, err := pc.ReadFrom(buf)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("Server read %d bytes\n", n)
+	}
+	wg.Add(1)
+	go udpServer()
+	<-ch
+	n, err := p.SendBytes("localhost")
+	if err != nil {
+		t.Error(err)
+	}
+	fmt.Printf("Client write %d bytes\n", n)
+	wg.Wait()
 }
